@@ -1,0 +1,79 @@
+#------------------------
+# SERVICES
+#------------------------
+services:
+
+# Service grafana
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${INFLUXDB_TOKEN}
+    networks:
+      - monitoring
+
+# Service telegraf
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    restart: unless-stopped
+    ports:
+      - 8125:8125/udp
+    volumes:
+      - ./Telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    networks:
+      - monitoring
+    environment:
+      - INFLUXDB_HOST=${INFLUXDB_HOST}
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+      - HOSTNAME=telegraf
+
+# Service InfluxDB 3 Core
+  influxdb3-core:
+    image: influxdb:3-core
+    container_name: influxdb3-core
+    restart: unless-stopped
+    ports:
+      - 8181:8181
+    command:
+      - influxdb3
+      - serve
+      - --node-id=${INFLUXDB_NODE_ID}
+      - --object-store=file
+      - --data-dir=/var/lib/influxdb3/data
+      - --plugin-dir=/var/lib/influxdb3/plugins
+    volumes:
+      - type: bind
+        # Path to store data on your host system
+        source: ~/.influxdb3/data
+        # Path to store data in the container
+        target: /var/lib/influxdb3/data
+      - type: bind
+        # Path to store plugins on your host system
+        source: ~/.influxdb3/plugins
+        # Path to store plugins in the container
+        target: /var/lib/influxdb3/plugins
+    networks:
+      - monitoring
+
+#------------------------
+# VOLUMES
+#------------------------
+volumes:
+  grafana-storage: {}
+  influxdb_data:
+
+#------------------------
+# NETWORKS
+#------------------------
+networks:
+  monitoring:
+    driver: bridge
