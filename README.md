@@ -1,6 +1,7 @@
 # Stack TIG Docker
 
 **Projet stack TIG (Telegraf, InfluxDB et Grafana) avec dockerfile**
+![Démonstration Dashboard](img/dashboard.png)
 
 ## Docker-compose
 
