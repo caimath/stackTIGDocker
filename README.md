@@ -3,7 +3,9 @@
 **Projet stack TIG (Telegraf, InfluxDB et Grafana) avec Docker Compose**
 ![Démonstration Dashboard](img/dashboard.png)
 
-## Docker-compose
+## Étape 1: Docker-compose
+
+### Docker-compose
 
 ```docker
 # Compose uniquement InfluxDB
@@ -17,9 +19,9 @@ docker-compose exec influxdb3-core influxdb3 create token --admin
 docker compose up -d
 ```
 
-## Grafana
+### Grafana
 
-### Connecter une Data Source
+#### Connecter une Data Source
 
 * Se connecter à `http://localhost:3000`
 * Ajouter une data source InfluxDB:
@@ -28,7 +30,7 @@ docker compose up -d
   * URL: [http://influxdb3-core:8181](http://influxdb3-core:8181)
   * InfluxDB Details: projetTricaBucket, mettre le token généré avant, autoriser les "Insecure Connection"
 
-### Créer un Dashboard
+#### Créer un Dashboard
 
 4 visualisation
 
@@ -46,25 +48,50 @@ SELECT 100.0 - usage_idle as cpu_usage FROM cpu WHERE cpu = 'cpu-total' ORDER BY
 SELECT used_percent as mem_usage FROM mem ORDER BY time DESC LIMIT 1
 ```
 
-## Tester
+### Tester
 
-### Tester Telegraf
+#### Tester Telegraf
 
 ```Docker
 # Tester que Telegraf reçoive bien des données
 docker-compose exec telegraf telegraf -config /etc/telegraf/telegraf.conf -test
 ```
 
-### Tester InfluxDB
+#### Tester InfluxDB
 
 ```docker
 # Tester que InfluxDB reçoive les données de Telegraf
 docker-compose exec influxdb3-core influxdb3 query "SHOW TABLES" --database projetTricaBucket --token RemplacerParTokenGenerer
 ```
 
-### Tester Grafana
+#### Tester Grafana
 
 ```Docker
 docker-compose exec grafana
 # Acceder à http://localhost:3000
+```
+
+## Étape 2: Kompose
+
+### Installation (Windows)
+
+```Powershell
+# Installer Kompose
+winget install Kubernetes.kompose
+
+# Fermer interpréteur de commande
+# Rouvrir interpréteur de commande
+
+# Vérifier la version de Kompose
+ kompose version
+```
+
+### Convertir Docker-compose en fichier Kubernetes
+
+```Bash
+# Convertir docker-compose.yml en fichier Kubernetes
+kompose --file docker-compose.yml convert
+
+# Utiliser Kubernetes
+kubectl apply
 ```
