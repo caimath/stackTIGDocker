@@ -70,28 +70,3 @@ docker-compose exec influxdb3-core influxdb3 query "SHOW TABLES" --database proj
 docker-compose exec grafana
 # Acceder à http://localhost:3000
 ```
-
-## Étape 2: Kompose
-
-### Installation (Windows)
-
-```Powershell
-# Installer Kompose
-winget install Kubernetes.kompose
-
-# Fermer interpréteur de commande
-# Rouvrir interpréteur de commande
-
-# Vérifier la version de Kompose
- kompose version
-```
-
-### Convertir Docker-compose en fichier Kubernetes
-
-```Bash
-# Convertir docker-compose.yml en fichier Kubernetes
-kompose --file docker-compose.yml convert
-
-# Utiliser Kubernetes
-kubectl apply
-```
