@@ -32,7 +32,9 @@ docker compose up -d
 
 #### Créer un Dashboard
 
-4 visualisation
+* Importer le json [DashboardTrica](DashboardTrica.json)
+
+* Ou le faire manuellement
 
 ```SQL
 /* Memory usage over time*/
